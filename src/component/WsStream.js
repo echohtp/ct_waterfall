@@ -64,6 +64,7 @@ class WsStream extends React.Component {
         domain: message["data"]["leaf_cert"]["all_domains"][i],
         issuer: message['data']['chain'][0]['subject']['CN'],
         entropy: this.entropy(message["data"]["leaf_cert"]["all_domains"][i]),
+        cert_link: message["data"]["cert_link"],
         ip: []
 
       }
@@ -143,12 +144,18 @@ class WsStream extends React.Component {
         tArr.push(...this.state.tlds[i])
         return 1
       })
-      tArr.map((i) => { rows.push({ "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+      tArr.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a> ,"domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
     } else {
-      this.state.tData.map((i) => { rows.push({ "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+      this.state.tData.map((i) => { rows.push({ "cert_link": <a href={ i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
     }
     const data = {
       columns: [
+        {
+          label: ['certificate', <br />, <small>the certificate issued</small>],
+          field: 'cert_link',
+          sort: 'asc',
+          width: 50
+        },
         {
           label: ['domain', <br />, <small>filter on TLDs using the widget</small>],
           field: 'domain',
@@ -189,7 +196,7 @@ class WsStream extends React.Component {
           label: ["virustotal", <br />, <small>check the domain</small>],
           field: "vt",
           sort: "asc",
-          width: 100
+          width: 50
         }
       ],
       rows: rows
