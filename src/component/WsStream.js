@@ -197,7 +197,7 @@ class WsStream extends React.Component {
 
 
     return (
-
+      <div style={{margin:0, padding:0}}>
       <div style={{ width: "98%", paddingLeft: "1%" }}>
 
         {
@@ -212,8 +212,8 @@ class WsStream extends React.Component {
         {this.state.done &&
 
 
-          <div className="row">
-            <div className="col-1">
+          <div className="row data_container">
+            <div className="col-1 d_c_left"  style={{borderRight: "1px solid lightgrey"}}>
               <br /><br /><br />
               <small>filter issuers</small>
 
@@ -231,15 +231,15 @@ class WsStream extends React.Component {
                 </ul>
               </div>
             </div>
-            <div className="col-11">
-              <MDBDataTable small striped bordered data={data} />
+            <div className="col-11 d_c_left" >
+              <MDBDataTable small bordered striped data={data} />
             </div>
           </div>
         }
 
-
-
-      </div>
+    </div>
+        <hr style={{width: "100% !important", margin: 0}}/>
+      </div> 
     );
   }
 }
