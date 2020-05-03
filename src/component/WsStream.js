@@ -88,6 +88,8 @@ class WsStream extends React.Component {
           tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
           });
 
+      }else{
+        t_dmn['ip'] = ["X"]
       }
       iData[message['data']['chain'][0]['subject']['CN']] = (typeof iData[message['data']['chain'][0]['subject']['CN']] != 'undefined' && iData[message['data']['chain'][0]['subject']['CN']] instanceof Array) ? iData[message['data']['chain'][0]['subject']['CN']] : []
       iData[message['data']['chain'][0]['subject']['CN']].push(t_dmn)
@@ -153,8 +155,7 @@ class WsStream extends React.Component {
         {
           label: ['certificate', <br />, <small>the certificate issued</small>],
           field: 'cert_link',
-          sort: 'asc',
-          width: 50
+          width: 75
         },
         {
           label: ['domain', <br />, <small>filter on TLDs using the widget</small>],
@@ -189,14 +190,13 @@ class WsStream extends React.Component {
         {
           label: ["entropy", <br />, <small>higher numbers = greater entropy</small>],
           field: "entropy",
-          sort: "asc",
+          sort: 'asc',
           width: 100
         },
         {
           label: ["virustotal", <br />, <small>check the domain</small>],
           field: "vt",
-          sort: "asc",
-          width: 50
+          width: 75
         }
       ],
       rows: rows
