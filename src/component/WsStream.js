@@ -73,7 +73,7 @@ class WsStream extends React.Component {
 
         Axios.get('https://dns.google.com/resolve?name=' + t_dmn["domain"] + '&type=A').then(function (response) {
           // handle success
-          response.data.Answer.map((ip)=>{
+          response.data.Answer.map((ip) => {
             t_dmn["ip"].push(ip["data"])
             return 1
           })
@@ -85,10 +85,10 @@ class WsStream extends React.Component {
           .then(function () {
             // always executed
             tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] = (typeof tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] != 'undefined' && tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] instanceof Array) ? tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] : []
-          tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
+            tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
           });
 
-      }else{
+      } else {
         t_dmn['ip'] = ["X"]
       }
       iData[message['data']['chain'][0]['subject']['CN']] = (typeof iData[message['data']['chain'][0]['subject']['CN']] != 'undefined' && iData[message['data']['chain'][0]['subject']['CN']] instanceof Array) ? iData[message['data']['chain'][0]['subject']['CN']] : []
@@ -100,9 +100,16 @@ class WsStream extends React.Component {
 
 
     let done = false
-    if (nc === this.state.limit)
+    if (nc === this.state.limit) {
       done = true
+
+      this.props.ReactGA.event({
+        category: 'Websocket',
+        action: 'We hit our internal limit'
+      });
+    }
     this.setState({ count: nc, done: done });
+
   }
 
   handleInputChange(e) {
@@ -146,9 +153,9 @@ class WsStream extends React.Component {
         tArr.push(...this.state.tlds[i])
         return 1
       })
-      tArr.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a> ,"domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+      tArr.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">📜</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
     } else {
-      this.state.tData.map((i) => { rows.push({ "cert_link": <a href={ i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+      this.state.tData.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">📜</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
     }
     const data = {
       columns: [
@@ -204,49 +211,50 @@ class WsStream extends React.Component {
 
 
     return (
-      <div style={{margin:0, padding:0}}>
-      <div style={{ width: "98%", paddingLeft: "1%" }}>
+      <div style={{ margin: 0, padding: 0 }}>
+        <div style={{ width: "98%", paddingLeft: "1%" }}>
 
-        {
-          !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} />
-        }
+          {
+            !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} /> 
+            
+          }
 
-        {!this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
-          <div></div><div></div><div></div><div></div>
-        </div></div> <p>Processing the first <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div>}
-
-
-        {this.state.done &&
+          {!this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
+            <div></div><div></div><div></div><div></div>
+          </div></div> <p>Processing the first <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div>}
 
 
-          <div className="row data_container">
-            <div className="col-1 d_c_left"  style={{borderRight: "1px solid lightgrey"}}>
-              <br /><br /><br />
-              <small>filter issuers</small>
+          {this.state.done &&
 
-              <div className="filter-box">
-                <ul style={{ textDecoration: "none", textJustify: "left" }}>
-                  {Object.keys(this.state.issuers).map((i) => (<div className="form-check" key={Math.random()}><input className="form-check-input" name="issuers" type="checkbox" checked={this.state.filter_issuers.includes(i) ? true : false} id={i} onChange={this.handleInputChange} /><label className="form-check-label" >{i}</label></div>))}
-                </ul>
+
+            <div className="row data_container">
+              <div className="col-1 d_c_left" style={{ borderRight: "1px solid lightgrey" }}>
+                <br /><br /><br />
+                <small>filter issuers</small>
+
+                <div className="filter-box">
+                  <ul style={{ textDecoration: "none", textJustify: "left" }}>
+                    {Object.keys(this.state.issuers).map((i) => (<div className="form-check" key={Math.random()}><input className="form-check-input" name="issuers" type="checkbox" checked={this.state.filter_issuers.includes(i) ? true : false} id={i} onChange={this.handleInputChange} /><label className="form-check-label" >{i}</label></div>))}
+                  </ul>
+                </div>
+                <hr className="filter-hr" />
+                <small>filter TLDs</small>
+
+                <div className="filter-box">
+                  <ul style={{ textDecoration: "none", textJustify: "left" }}>
+                    {Object.keys(this.state.tlds).map((i) => (<div className="form-check" key={Math.random()}><input className="form-check-input" name="tlds" type="checkbox" checked={this.state.filter_tlds.includes(i) ? true : false} id={i} onChange={this.handleInputChange} /><label className="form-check-label" >.{i}</label></div>))}
+                  </ul>
+                </div>
               </div>
-              <hr className="filter-hr" />
-              <small>filter TLDs</small>
-
-              <div className="filter-box">
-                <ul style={{ textDecoration: "none", textJustify: "left" }}>
-                  {Object.keys(this.state.tlds).map((i) => (<div className="form-check" key={Math.random()}><input className="form-check-input" name="tlds" type="checkbox" checked={this.state.filter_tlds.includes(i) ? true : false} id={i} onChange={this.handleInputChange} /><label className="form-check-label" >.{i}</label></div>))}
-                </ul>
+              <div className="col-11 d_c_left" >
+                <MDBDataTable small bordered striped data={data} />
               </div>
             </div>
-            <div className="col-11 d_c_left" >
-              <MDBDataTable small bordered striped data={data} />
-            </div>
-          </div>
-        }
+          }
 
-    </div>
-        <hr style={{width: "100% !important", margin: 0}}/>
-      </div> 
+        </div>
+        <hr style={{ width: "100% !important", margin: 0 }} />
+      </div>
     );
   }
 }
