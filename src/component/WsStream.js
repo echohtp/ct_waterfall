@@ -63,7 +63,7 @@ class WsStream extends React.Component {
         message: message,
         domain: message["data"]["leaf_cert"]["all_domains"][i],
         issuer: message['data']['chain'][0]['subject']['CN'],
-        entropy: this.entropy(message["data"]["leaf_cert"]["all_domains"][i]),
+        entropy: this.entropy(message["data"]["leaf_cert"]["all_domains"][i]).toFixed(5),
         cert_link: message["data"]["cert_link"],
         ip: []
 
@@ -160,7 +160,7 @@ class WsStream extends React.Component {
     const data = {
       columns: [
         {
-          label: ['certificate', <br />, <small>the certificate issued</small>],
+          label: ['certificate', <br />, <small>the issued cert</small>],
           field: 'cert_link',
           width: 75
         },
@@ -171,31 +171,31 @@ class WsStream extends React.Component {
           width: 100
         },
         {
-          label: ['ip', <br />, <small>ip addresses associated with domain</small>],
+          label: ['ip', <br />, <small>addresses associated w/ domain</small>],
           field: 'ip',
           sort: 'asc',
           width: 100
         },
         {
-          label: ['issuer', <br />, <small>certificate issuer</small>],
+          label: ['issuer', <br />, <small>who issued the cert?</small>],
           field: 'issuer',
           sort: 'asc',
           width: 100
         },
         {
-          label: ['not_before', <br />, <small>not valid before date</small>],
+          label: ['not_before', <br />, <small>invalid before date</small>],
           field: 'not_before',
           sort: 'asc',
           width: 100
         },
         {
-          label: ['not_after', <br />, <small>not valid after date</small>],
+          label: ['not_after', <br />, <small>invalid after date</small>],
           field: 'not_after',
           sort: 'asc',
           width: 100
         },
         {
-          label: ["entropy", <br />, <small>higher numbers = greater entropy</small>],
+          label: ["entropy", <br />, <small>higher number = higher entropy</small>],
           field: "entropy",
           sort: 'asc',
           width: 100
