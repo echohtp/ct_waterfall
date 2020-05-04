@@ -75,6 +75,8 @@ class WsStream extends React.Component {
           // handle success
           response.data.Answer.map((ip) => {
             t_dmn["ip"].push(ip["data"])
+            tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] = (typeof tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] != 'undefined' && tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] instanceof Array) ? tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] : []
+            tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
             return 1
           })
         })
@@ -84,8 +86,7 @@ class WsStream extends React.Component {
           })
           .then(function () {
             // always executed
-            tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] = (typeof tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] != 'undefined' && tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] instanceof Array) ? tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] : []
-            tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
+            
           });
 
       } else {
