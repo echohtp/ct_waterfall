@@ -11,7 +11,7 @@ class WsStream extends React.Component {
     super(props);
     this.state = {
       count: 0,
-      limit: 50,
+      limit: 200,
       tData: [],
       issuers: {},
       tlds: {},
