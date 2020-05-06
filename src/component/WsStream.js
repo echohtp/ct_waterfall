@@ -1,6 +1,6 @@
 import React from 'react';
 import Websocket from 'react-websocket';
-import { MDBDataTable } from 'mdbreact';
+import {MDBDataTable, MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
 import { getPublicSuffix } from 'tldjs';
 import Axios from 'axios';
 
@@ -86,7 +86,7 @@ class WsStream extends React.Component {
           })
           .then(function () {
             // always executed
-            
+
           });
 
       } else {
@@ -216,8 +216,8 @@ class WsStream extends React.Component {
         <div style={{ width: "98%", paddingLeft: "1%" }}>
 
           {
-            !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} /> 
-            
+            !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} />
+
           }
 
           {!this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
@@ -229,7 +229,7 @@ class WsStream extends React.Component {
 
 
             <div className="row data_container">
-              <div className="col-1 d_c_left" style={{ borderRight: "1px solid lightgrey" }}>
+              <div className="col-sm-3 d_c_left" style={{ borderRight: "1px solid lightgrey" }}>
                 <br /><br /><br />
                 <small>filter issuers</small>
 
@@ -247,8 +247,12 @@ class WsStream extends React.Component {
                   </ul>
                 </div>
               </div>
-              <div className="col-11 d_c_left" >
-                <MDBDataTable small bordered striped data={data} />
+              <div className="col-sm-9 d_c_left" >
+                <MDBDataTable small bordered striped data={data} responsive searchLabel=" " />
+                {/* <MDBTable small bordered striped responsive  paging>
+                  <MDBTableHead columns={data.columns} />
+                  <MDBTableBody rows={data.rows} />
+                </MDBTable> */}
               </div>
             </div>
           }

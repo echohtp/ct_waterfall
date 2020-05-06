@@ -52,11 +52,9 @@ body {
   max-height: 300px;
   overflow-y: scroll;
   font-size: small;
+  scrollbar-width: thin;
 }
 
-.dataTables_filter{
-  color: white;
-}
 
 .data_container{
   
@@ -75,17 +73,19 @@ body {
   border-top: 2px solid lightgrey;
 }
 
+
+
 .filter-box > ul {
   margin:0;
   padding: 0;
   text-align: left;
 }
 
-.filter-box:hover{
-  -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 255, 0, 0.67);
--moz-box-shadow:    0px 0px 8px 0px rgba(0, 255, 0, 0.67);
-box-shadow:         0px 0px 8px 0px rgba(0, 255, 0, 0.67);
-}
+/* .filter-box:hover{
+  -webkit-box-shadow: 0px 0px 2px 0px #282c34;
+-moz-box-shadow:    0px 0px 2px 0px #282c34;
+box-shadow:         0px 0px 2px 0px #282c34;
+} */
 
 @keyframes ldio-x6fsq21hkv {
   0% { transform: scale(1.1500000000000001) }
