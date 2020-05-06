@@ -3,7 +3,7 @@ import Websocket from 'react-websocket';
 import { MDBDataTable } from 'mdbreact';
 import { getPublicSuffix } from 'tldjs';
 import Axios from 'axios';
-import { CSVLink, CSVDownload } from 'react-csv';
+import { CSVLink } from 'react-csv';
 
 class WsStream extends React.Component {
 
@@ -262,7 +262,7 @@ class WsStream extends React.Component {
                   </ul>
                 </div>
                 <hr className="filter-hr" />
-                <CSVLink data={data.rows} className="btn btn-primary">Download Data</CSVLink>
+                <CSVLink data={iterate} className="btn btn-primary">Download Data</CSVLink>
               </div>
               <div className="col-sm-9 d_c_left" >
                 <MDBDataTable small bordered striped data={data} responsive searchLabel=" " />
