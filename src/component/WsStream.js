@@ -1,8 +1,9 @@
 import React from 'react';
 import Websocket from 'react-websocket';
-import {MDBDataTable, MDBTable, MDBTableBody, MDBTableHead } from 'mdbreact';
+import { MDBDataTable } from 'mdbreact';
 import { getPublicSuffix } from 'tldjs';
 import Axios from 'axios';
+import { CSVLink, CSVDownload } from 'react-csv';
 
 class WsStream extends React.Component {
 
@@ -10,13 +11,14 @@ class WsStream extends React.Component {
     super(props);
     this.state = {
       count: 0,
-      limit: 200,
+      limit: 50,
       tData: [],
       issuers: {},
       tlds: {},
       done: false,
       filter_tlds: [],
-      filter_issuers: []
+      filter_issuers: [],
+      tableData: []
     };
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -65,7 +67,8 @@ class WsStream extends React.Component {
         issuer: message['data']['chain'][0]['subject']['CN'],
         entropy: this.entropy(message["data"]["leaf_cert"]["all_domains"][i]).toFixed(5),
         cert_link: message["data"]["cert_link"],
-        ip: []
+        ip: [],
+        tld: ""
 
       }
       //getPublicSuffix
@@ -75,6 +78,7 @@ class WsStream extends React.Component {
           // handle success
           response.data.Answer.map((ip) => {
             t_dmn["ip"].push(ip["data"])
+            t_dmn["tld"] = getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])
             tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] = (typeof tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] != 'undefined' && tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] instanceof Array) ? tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])] : []
             tldData[getPublicSuffix(message["data"]["leaf_cert"]["all_domains"][i])].push(t_dmn)
             return 1
@@ -95,7 +99,7 @@ class WsStream extends React.Component {
       iData[message['data']['chain'][0]['subject']['CN']] = (typeof iData[message['data']['chain'][0]['subject']['CN']] != 'undefined' && iData[message['data']['chain'][0]['subject']['CN']] instanceof Array) ? iData[message['data']['chain'][0]['subject']['CN']] : []
       iData[message['data']['chain'][0]['subject']['CN']].push(t_dmn)
       tdata.push(t_dmn);
-      this.setState({ tData: tdata, issuers: iData, tlds: tldData });
+      this.setState({ tData: tdata, issuers: iData, tlds: tldData, tableData: tdata });
     }
 
 
@@ -122,7 +126,15 @@ class WsStream extends React.Component {
       } else {
         filter_arr.push(e.target.id)
       }
-      this.setState({ filter_tlds: filter_arr })
+
+      var tArr = []
+      this.state.tData.map((i) => {
+        if (this.state.filter_tlds.includes(i["tld"]) || this.state.filter_issuers.includes(i["issuer"]))
+          tArr.push(i)
+        return 1
+      })
+
+      this.setState({ filter_tlds: filter_arr, tableData: tArr })
     }
     if (e.target.name === "issuers") {
       let filter_arr = this.state.filter_issuers
@@ -132,10 +144,16 @@ class WsStream extends React.Component {
       } else {
         filter_arr.push(e.target.id)
       }
-      this.setState({ filter_issuers: filter_arr })
+
+      tArr = []
+      this.state.tData.map((i) => {
+        if (this.state.filter_tlds.includes(i["tld"]) || this.state.filter_issuers.includes(i["issuer"]))
+          tArr.push(i)
+        return 1
+      })
+
+      this.setState({ filter_issuers: filter_arr, tableData: tArr })
     }
-
-
     console.log(e.target.id)
   }
 
@@ -143,21 +161,18 @@ class WsStream extends React.Component {
 
 
     let rows = []
-    if (this.state.filter_issuers.length > 0 || this.state.filter_tlds.length > 0) {
-      let tArr = []
-      this.state.filter_issuers.map((i) => {
-        tArr.push(...this.state.issuers[i])
-        return 1
-      })
+    let iterate = []
 
-      this.state.filter_tlds.map((i) => {
-        tArr.push(...this.state.tlds[i])
-        return 1
-      })
-      tArr.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">📜</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
-    } else {
-      this.state.tData.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">📜</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+    if (this.state.tableData.length === 0){
+      iterate = this.state.tData
     }
+    else{
+      iterate = this.state.tableData
+    }
+    
+    iterate.map((i) => { rows.push({ "cert_link": <a href={i['cert_link']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">📜</span></a>, "domain": [i['domain'], <a href={"https://" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="visit this site">⤴️</span></a>], ip: i["ip"].join(), issuer: i["issuer"], entropy: i['entropy'], not_before: i["not_before"], not_after: i["not_after"], "vt": <a href={"https://www.virustotal.com/gui/search/" + i['domain']} rel="noopener noreferrer" target="_blank"> <span role="img" aria-label="to vt">🦠❓</span></a> }); return 1; })
+    
+
     const data = {
       columns: [
         {
@@ -246,13 +261,11 @@ class WsStream extends React.Component {
                     {Object.keys(this.state.tlds).map((i) => (<div className="form-check" key={Math.random()}><input className="form-check-input" name="tlds" type="checkbox" checked={this.state.filter_tlds.includes(i) ? true : false} id={i} onChange={this.handleInputChange} /><label className="form-check-label" >.{i}</label></div>))}
                   </ul>
                 </div>
+                <hr className="filter-hr" />
+                <CSVLink data={data.rows} className="btn btn-primary">Download Data</CSVLink>
               </div>
               <div className="col-sm-9 d_c_left" >
                 <MDBDataTable small bordered striped data={data} responsive searchLabel=" " />
-                {/* <MDBTable small bordered striped responsive  paging>
-                  <MDBTableHead columns={data.columns} />
-                  <MDBTableBody rows={data.rows} />
-                </MDBTable> */}
               </div>
             </div>
           }
