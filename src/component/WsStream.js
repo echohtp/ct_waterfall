@@ -187,7 +187,7 @@ class WsStream extends React.Component {
     const data = {
       columns: [
         {
-          label: ['certificate', <br />, <small>the issued cert</small>],
+          label: ['certificate', <br />, <small>issued cert</small>],
           field: 'cert_link',
           width: 75
         },
