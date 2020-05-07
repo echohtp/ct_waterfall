@@ -258,9 +258,9 @@ class WsStream extends React.Component {
               <div className="col-sm-2 d_c_left" >
                 <br />
                 <div class="btn-group btn-group-sm" role="group" aria-label="Button row">
-                  <CSVLink data={iterate} filename={'ct_datadrifter_xyz_' + Date.now() + '.csv'} className="btn btn-primary-outline btn-small">export csv</CSVLink>
-                  <button className="btn btn-primary-outline btn-small" onClick={this.getMoreCerts}>load more certs</button>
-                  <button className="btn btn-primary-outline btn-small" onClick={this.clearData}>clear</button>
+                  <CSVLink data={iterate} filename={'ct_datadrifter_xyz_' + Date.now() + '.csv'} className="btn btn-primary-outline">export csv</CSVLink>
+                  <button className="btn btn-primary-outline" onClick={this.getMoreCerts}>load addt'l certs</button>
+                  <button className="btn btn-primary-outline" onClick={this.clearData}>clear</button>
                 </div>
                 
                 
