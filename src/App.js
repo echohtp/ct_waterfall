@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-      <h1>Certificate Transparency Now!</h1>
+      <h1>certificate transparency now!</h1>
       </header>
       <WsStream ReactGA={ReactGA}></WsStream>
     </div>

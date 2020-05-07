@@ -2,6 +2,10 @@ body {
   line-height: 1.3;
 }
 
+.btn {
+  text-transform: lowercase !important;
+}
+
 .App {
   text-align: center;
 }
@@ -61,8 +65,9 @@ body {
 }
 
 .d_c_left{
-  
+  border-right: 2px solid lightgrey;
 }
+
 
 .d_c_right{
   border: 0;

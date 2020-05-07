@@ -22,6 +22,8 @@ class WsStream extends React.Component {
     };
 
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.getMoreCerts = this.getMoreCerts.bind(this)
+    this.clearData = this.clearData.bind(this)
 
   }
 
@@ -37,6 +39,14 @@ class WsStream extends React.Component {
       .reduce((sum, f) => sum - f / len * Math.log2(f / len), 0)
   }
 
+
+  getMoreCerts(){
+    this.setState({done: false, count:0})
+  }
+
+    clearData(){
+      this.setState({tData: [], tableData:[]})
+    }
 
   handleData(data) {
 
@@ -157,6 +167,7 @@ class WsStream extends React.Component {
     console.log(e.target.id)
   }
 
+
   render() {
 
 
@@ -225,7 +236,7 @@ class WsStream extends React.Component {
       rows: rows
     }
 
-
+  
     return (
       <div style={{ margin: 0, padding: 0 }}>
         <div style={{ width: "98%", paddingLeft: "1%" }}>
@@ -237,15 +248,23 @@ class WsStream extends React.Component {
 
           {!this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
             <div></div><div></div><div></div><div></div>
-          </div></div> <p>Processing the first <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div>}
+          </div></div> <p>Processing the next <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div>}
 
 
           {this.state.done &&
 
 
             <div className="row data_container">
-              <div className="col-sm-3 d_c_left" style={{ borderRight: "1px solid lightgrey" }}>
-                <br /><br /><br />
+              <div className="col-sm-2 d_c_left" >
+                <br />
+                <div class="btn-group btn-group-sm" role="group" aria-label="Button row">
+                  <CSVLink data={iterate} filename={'ct_datadrifter_xyz_' + Date.now() + '.csv'} className="btn btn-primary-outline btn-small">export csv</CSVLink>
+                  <button className="btn btn-primary-outline btn-small" onClick={this.getMoreCerts}>load more certs</button>
+                  <button className="btn btn-primary-outline btn-small" onClick={this.clearData}>clear</button>
+                </div>
+                
+                
+                <br /><br />
                 <small>filter issuers</small>
 
                 <div className="filter-box">
@@ -262,9 +281,9 @@ class WsStream extends React.Component {
                   </ul>
                 </div>
                 <hr className="filter-hr" />
-                <CSVLink data={iterate} className="btn btn-primary">Download Data</CSVLink>
+                
               </div>
-              <div className="col-sm-9 d_c_left" >
+              <div className="col-sm-10 d_c_left" >
                 <MDBDataTable small bordered striped data={data} responsive searchLabel=" " />
               </div>
             </div>
