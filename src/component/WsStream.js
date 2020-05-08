@@ -5,13 +5,14 @@ import { getPublicSuffix } from 'tldjs';
 import Axios from 'axios';
 import { CSVLink } from 'react-csv';
 
+
 class WsStream extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       count: 0,
-      limit: 200,
+      limit: 20,
       tData: [],
       issuers: {},
       tlds: {},
@@ -241,26 +242,21 @@ class WsStream extends React.Component {
       <div style={{ margin: 0, padding: 0 }}>
         <div style={{ width: "98%", paddingLeft: "1%" }}>
 
-          {
-            !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} />
+          { !this.state.done && <Websocket url='wss://certstream.calidog.io' onMessage={this.handleData.bind(this)} /> }
 
-          }
-
-          {!this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
+          { !this.state.done && <div><div className="loadingio-spinner-cube-fpz0k51mnpw"><div className="ldio-x6fsq21hkv">
             <div></div><div></div><div></div><div></div>
-          </div></div> <p>Processing the next <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div>}
+          </div></div> <p>Processing the next <strong>{this.state.count}/{this.state.limit}</strong> certificates</p></div> }
 
 
           {this.state.done &&
-
-
             <div className="row data_container">
               <div className="col-sm-2 d_c_left" >
                 <br />
                 <div class="btn-group btn-group-sm" role="group" aria-label="Button row">
-                  <CSVLink data={iterate} filename={'ct_datadrifter_xyz_' + Date.now() + '.csv'} className="btn btn-primary-outline">export csv</CSVLink>
-                  <button className="btn btn-primary-outline" onClick={this.getMoreCerts}>load addt'l certs</button>
-                  <button className="btn btn-primary-outline" onClick={this.clearData}>clear</button>
+                  <CSVLink data={iterate} filename={'ct_datadrifter_xyz_' + Date.now() + '.csv'} className="btn btn-primary">export csv</CSVLink>
+                  <button className="btn btn-primary" onClick={this.getMoreCerts}>load addt'l certs</button>
+                  <button className="btn btn-primary" onClick={this.clearData}>clear</button>
                 </div>
                 
                 
@@ -292,6 +288,7 @@ class WsStream extends React.Component {
         </div>
         <hr style={{ width: "100% !important", margin: 0 }} />
       </div>
+  
     );
   }
 }
